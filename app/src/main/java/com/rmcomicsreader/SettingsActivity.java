@@ -2,6 +2,7 @@ package com.rmcomicsreader;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
@@ -15,9 +16,13 @@ import android.widget.Toast;
 import com.rmcomicsreader.model.DirectoryChooserDialog;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Properties;
 
 /**
  * Created by Ромочка on 11.05.2015.
@@ -27,13 +32,27 @@ public class SettingsActivity extends Activity {
     private ListView listView = null;
     private ArrayList<File> listFileComics = new ArrayList<File>();
     private int currentComics = 0;
+    private int currentPage = -1;
+    private SharedPreferences sPref;
+    private TextView textView;
+    private String[] jpgList;              // Массив изображений
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshList();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
 
-
+        if(!loadHomeDir().equals("null")) {
+            m_chosenDir = loadHomeDir();
+            parseDirHome();
+            refreshList();
+        }
         // получаем экземпляр элемента ListView
         listView = (ListView)findViewById(R.id.listViewComics);
 
@@ -43,6 +62,8 @@ public class SettingsActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
                                     long id) {
                 currentComics = position;
+                selectComics(listFileComics.get(position).getPath());
+                textView.setText(" / " + jpgList[position]);
             }
         });
 
@@ -59,16 +80,19 @@ public class SettingsActivity extends Activity {
                                     @Override
                                     public void onChosenDir(String chosenDir) {
                                         m_chosenDir = chosenDir;
+                                        saveText(m_chosenDir);
                                         Toast.makeText(
                                                 SettingsActivity.this, "Chosen directory: " +
                                                         chosenDir, Toast.LENGTH_LONG).show();
+                                        parseDirHome();
+                                        refreshList();
                                     }
                                 });
                 // Toggle new folder button enabling
                 directoryChooserDialog.setNewFolderEnabled(m_newFolderEnabled);
                 // Load directory chooser dialog for initial 'm_chosenDir' directory.
                 // The registered callback will be called upon final directory selection.
-                directoryChooserDialog.chooseDirectory(m_chosenDir);
+                directoryChooserDialog.chooseDirectory("");
                 m_newFolderEnabled = !m_newFolderEnabled;
             }
         });
@@ -76,9 +100,16 @@ public class SettingsActivity extends Activity {
 
 
     public void onClickToView(View view) {
-        Intent intent = new Intent(SettingsActivity.this,MainActivity.class);
-        intent.putExtra("path",listFileComics.get(0).getPath());
-        startActivity(intent);
+        try {
+            Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+            if (!listFileComics.isEmpty()) {
+                intent.putExtra("path", listFileComics.get(currentComics).getPath());
+                intent.putExtra("current", String.valueOf(currentPage));
+            }
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setRefresh(View view) {
@@ -112,6 +143,33 @@ public class SettingsActivity extends Activity {
             listView.setAdapter(adapter);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    void saveText(String text) {
+        sPref = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed = sPref.edit();
+        ed.putString("homeDir", text);
+        ed.commit();
+    }
+
+    String loadHomeDir() {
+        sPref = getPreferences(MODE_PRIVATE);
+        String savedText = sPref.getString("homeDir", "");
+        return savedText;
+    }
+
+    public void selectComics(String path) {
+        File currentDir = new File(path);
+        PageTypeFilter filter = new PageTypeFilter();
+        jpgList = currentDir.list(filter);
+        if (jpgList.length == 0) { return; }
+    }
+
+    class PageTypeFilter implements FilenameFilter {
+        @Override
+        public boolean accept(File dir, String name) {
+            return (name.endsWith(".jpg") || name.endsWith(".png"));
         }
     }
 }

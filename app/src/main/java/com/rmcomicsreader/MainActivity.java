@@ -2,6 +2,8 @@ package com.rmcomicsreader;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.BitmapFactory;
+import android.graphics.ImageFormat;
 import android.media.Image;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -16,11 +19,12 @@ import android.widget.ListView;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 
 public class MainActivity extends ActionBarActivity {
     WebView imageViewComics = null;
-    private int currentPage = 0;           // Номер текущего изображения
+    private int currentPage = -1;           // Номер текущего изображения
     private String[] jpgList;              // Массив изображений
     private String path;
 
@@ -33,6 +37,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         imageViewComics = (WebView)findViewById(R.id.webView);
+        imageViewComics.loadData("<style>img{display: inline;height: auto;max-width: 100%;}</style>", "UTF-8", null);
+        imageViewComics.getSettings().setLoadWithOverviewMode(true);
         imageViewComics.getSettings().setUseWideViewPort(true);
         imageViewComics.setInitialScale(1);
         imageViewComics.getSettings().setBuiltInZoomControls(true);
@@ -48,9 +54,6 @@ public class MainActivity extends ActionBarActivity {
         super.onConfigurationChanged(newConfig);
         if(newConfig.equals(Configuration.ORIENTATION_LANDSCAPE)){
 
-            currentHeight=width;
-            showPage();
-
         }if(newConfig.equals(Configuration.ORIENTATION_PORTRAIT)){
 
             currentHeight=height;
@@ -64,8 +67,9 @@ public class MainActivity extends ActionBarActivity {
     protected void onResume() {
         super.onResume();
         Intent intent = getIntent();
-        if (intent.getStringExtra("path") != null ) {
+        if (intent.getStringExtra("path") != null) {
             String fpath = intent.getStringExtra("path");
+            currentPage = Integer.getInteger(intent.getStringExtra("current"));
             selectComics(fpath);
         }
     }
@@ -112,18 +116,25 @@ public class MainActivity extends ActionBarActivity {
 
     private void showPage() {
         if (jpgList.length == 0) { return; }
-        imageViewComics.loadUrl("file:///" + path + "/" + jpgList[currentPage]);
+        /*BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path + jpgList[currentPage], options);
+        int width = options.outWidth;
+        int height = options.outHeight;*/
+        String data = "<div style=\"text-align:center; weight:100%; height:100%;\">" +
+                    "<img src=\"" + jpgList[currentPage] + "\"/></div>";
+        imageViewComics.loadDataWithBaseURL("file:///" + path + "/", data, "text/html", "utf-8", null);
     }
 
     public void nextPage(View view) {
-        if (currentPage >= 0 && currentPage <= jpgList.length) {
-            currentPage++;
-            showPage();
-        }
+            if (currentPage >= 0 && currentPage < jpgList.length - 1) {
+                currentPage++;
+                showPage();
+            }
     }
 
     public void prevPage(View view) {
-        if (currentPage >= 0 && currentPage <= jpgList.length) {
+        if (currentPage > 0 && currentPage <= jpgList.length) {
             currentPage--;
             showPage();
         }
