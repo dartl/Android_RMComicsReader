@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,22 +26,23 @@ public class SettingsActivity extends Activity {
     private String m_chosenDir = "";
     private ListView listView = null;
     private ArrayList<File> listFileComics = new ArrayList<File>();
-    private Button but = null;
+    private int currentComics = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
 
+
         // получаем экземпляр элемента ListView
         listView = (ListView)findViewById(R.id.listViewComics);
-        but = (Button)findViewById(R.id.button6);
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
                                     long id) {
-                but.setText(Integer.toString(position));
+                currentComics = position;
             }
         });
 
@@ -75,6 +77,7 @@ public class SettingsActivity extends Activity {
 
     public void onClickToView(View view) {
         Intent intent = new Intent(SettingsActivity.this,MainActivity.class);
+        intent.putExtra("path",listFileComics.get(0).getPath());
         startActivity(intent);
     }
 

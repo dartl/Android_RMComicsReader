@@ -1,14 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivityFragme">
+    android:layout_height="match_parent"
+    tools:context=".MainActivityFragme">
 
-    <ImageView
+
+    <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/imageView" />
+        android:id="@+id/webView"
+        android:background="#ff000000"
+        android:textAlignment="center"
+        android:layout_centerVertical="true"
+        android:layout_alignBaseline="@+id/pane" />
 
     <GridLayout
         android:layout_width="match_parent"
@@ -47,7 +50,8 @@
             android:layout_row="29"
             android:layout_column="0"
             android:layout_columnSpan="16"
-            android:layout_gravity="bottom|right" />
+            android:layout_gravity="bottom|right"
+            android:onClick="prevPage" />
 
         <Button
             android:layout_width="150dp"
@@ -56,6 +60,8 @@
             android:id="@+id/button4"
             android:layout_row="29"
             android:layout_column="16"
-            android:layout_gravity="bottom|right" />
+            android:layout_gravity="bottom|right"
+            android:onClick="nextPage" />
     </GridLayout>
+
 </RelativeLayout>
