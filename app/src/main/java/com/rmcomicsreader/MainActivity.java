@@ -47,4 +47,8 @@ public class MainActivity extends ActionBarActivity {
 
     public void setBookMark(View view) {
     }
+
+    public void selectComics(String path) {
+
+    }
 }

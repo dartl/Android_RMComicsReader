@@ -23,13 +23,15 @@
                 android:layout_gravity="left|top" />
         </FrameLayout>
 
-        <TextView
+        <ListView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="New Text"
-            android:id="@+id/textView"
-            android:layout_row="29"
-            android:layout_column="0" />
+            android:layout_height="430dp"
+            android:id="@+id/listViewComics"
+            android:layout_row="28"
+            android:layout_column="0"
+            android:layout_gravity="top"
+            android:layout_columnWeight="2"
+            android:layout_columnSpan="2" />
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -49,14 +51,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_row="30"
-            android:layout_column="1">
+            android:layout_column="1"
+            android:layout_gravity="bottom|right">
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Set dir home"
                 android:id="@+id/dirHome"
-                android:onClick="setDirHome" />
+                android:onClick="setDirHome"
+                android:layout_gravity="right" />
         </FrameLayout>
     </GridLayout>
 </LinearLayout>

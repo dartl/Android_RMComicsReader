@@ -4,30 +4,50 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.rmcomicsreader.model.DirectoryChooserDialog;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Ромочка on 11.05.2015.
  */
 public class SettingsActivity extends Activity {
     private String m_chosenDir = "";
-    private TextView textView;
+    private ListView listView = null;
+    private ArrayList<File> listFileComics = new ArrayList<File>();
+    private Button but = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_layout);
-        textView = (TextView) findViewById(R.id.textView);
+
+        // получаем экземпляр элемента ListView
+        listView = (ListView)findViewById(R.id.listViewComics);
+        but = (Button)findViewById(R.id.button6);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
+                                    long id) {
+                but.setText(Integer.toString(position));
+            }
+        });
 
         Button dirChooserButton = (Button) findViewById(R.id.dirHome);
         dirChooserButton.setOnClickListener(new View.OnClickListener() {
             private boolean m_newFolderEnabled = true;
+
             @Override
             public void onClick(View v) {
                 // Create DirectoryChooserDialog and register a callback
@@ -59,6 +79,36 @@ public class SettingsActivity extends Activity {
     }
 
     public void setRefresh(View view) {
-        textView.setText(m_chosenDir);
+        parseDirHome();
+        refreshList();
+    }
+
+    private void parseDirHome() {
+        try {
+            File homeDir = new File(m_chosenDir);
+            File[] filesList = homeDir.listFiles();
+            int count = 0;
+            listFileComics = new ArrayList<File>();
+            for (int i = 0; i < filesList.length; i++) {
+                if (filesList[i].isDirectory()) {
+                    listFileComics.add(count++,filesList[i]);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void refreshList() {
+        try {
+            String[] tempList = new String[listFileComics.size()];
+            for (int i = 0; i < listFileComics.size(); i++) {
+                tempList[i] = listFileComics.get(i).getName();
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,	android.R.layout.simple_list_item_1, tempList);
+            listView.setAdapter(adapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
