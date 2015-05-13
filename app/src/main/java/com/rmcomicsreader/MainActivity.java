@@ -53,14 +53,8 @@ public class MainActivity extends ActionBarActivity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if(newConfig.equals(Configuration.ORIENTATION_LANDSCAPE)){
-
         }if(newConfig.equals(Configuration.ORIENTATION_PORTRAIT)){
-
-            currentHeight=height;
-            showPage();
-
         }
-        //changeContent();
     }
 
     @Override
@@ -69,7 +63,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = getIntent();
         if (intent.getStringExtra("path") != null) {
             String fpath = intent.getStringExtra("path");
-            currentPage = Integer.getInteger(intent.getStringExtra("current"));
+            currentPage = intent.getIntExtra("cur", 0);
             selectComics(fpath);
         }
     }
@@ -109,7 +103,7 @@ public class MainActivity extends ActionBarActivity {
         PageTypeFilter filter = new PageTypeFilter();
         jpgList = currentDir.list(filter);
         if (jpgList.length == 0) { return; }
-        currentPage = 0;
+        if (currentPage == -1) {currentPage = 0;}
         this.path = path;
         showPage();
     }

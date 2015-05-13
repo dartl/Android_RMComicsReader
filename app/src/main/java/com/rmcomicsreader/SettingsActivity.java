@@ -9,6 +9,7 @@ import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,10 +33,12 @@ public class SettingsActivity extends Activity {
     private ListView listView = null;
     private ArrayList<File> listFileComics = new ArrayList<File>();
     private int currentComics = 0;
-    private int currentPage = -1;
+    private int currentPage = 0;
     private SharedPreferences sPref;
     private TextView textView;
     private String[] jpgList;              // Массив изображений
+    private EditText editText;
+    private int oldCurrentPage = 0;
 
     @Override
     protected void onResume() {
@@ -55,6 +58,8 @@ public class SettingsActivity extends Activity {
         }
         // получаем экземпляр элемента ListView
         listView = (ListView)findViewById(R.id.listViewComics);
+        textView = (TextView)findViewById(R.id.textView);
+        editText = (EditText)findViewById(R.id.editText);
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -63,7 +68,8 @@ public class SettingsActivity extends Activity {
                                     long id) {
                 currentComics = position;
                 selectComics(listFileComics.get(position).getPath());
-                textView.setText(" / " + jpgList[position]);
+                textView.setText(" / " + jpgList.length);
+                editText.setText(String.valueOf(currentPage+1));
             }
         });
 
@@ -104,7 +110,7 @@ public class SettingsActivity extends Activity {
             Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
             if (!listFileComics.isEmpty()) {
                 intent.putExtra("path", listFileComics.get(currentComics).getPath());
-                intent.putExtra("current", String.valueOf(currentPage));
+                intent.putExtra("cur", currentPage);
             }
             startActivity(intent);
         } catch (Exception e) {
@@ -164,6 +170,26 @@ public class SettingsActivity extends Activity {
         PageTypeFilter filter = new PageTypeFilter();
         jpgList = currentDir.list(filter);
         if (jpgList.length == 0) { return; }
+    }
+
+    public void moveToPage(View view) {
+        try {
+            int t = new Integer(editText.getText().toString());
+            if (t > 0 && t <= jpgList.length) {
+                currentPage = t - 1;
+                editText.setText(String.valueOf(currentPage + 1));
+            } else {
+                currentPage = oldCurrentPage;
+                editText.setText(String.valueOf(currentPage + 1));
+            }
+        } catch (Exception e) {
+
+        }
+
+    }
+
+    public void setOldCurrent(View view) {
+        oldCurrentPage = currentPage;
     }
 
     class PageTypeFilter implements FilenameFilter {
