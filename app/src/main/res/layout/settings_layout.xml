@@ -1,102 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    tools:context=".SettingsActivity">
 
     <GridLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:layout_row="0"
-            android:layout_column="0"
-            android:layout_gravity="top|left"
-            android:background="#64bfbfbf">
-
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:onClick="onClickToView"
-                android:id="@+id/button5"
-                android:layout_gravity="left|top"
-                android:background="@drawable/toviewblack" />
-        </FrameLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="0"
-            android:layout_column="1"
-            android:layout_gravity="left|right"
-            android:gravity="top|bottom|center_horizontal"
-            android:layout_marginTop="20dp">
-
-            <EditText
-                android:layout_width="49dp"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:ems="10"
-                android:id="@+id/editText"
-                android:layout_row="29"
-                android:layout_column="0"
-                android:layout_gravity="left"
-                android:onClick="setOldCurrent"
-                android:enabled="true"
-                android:focusable="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text=" / 0"
-                android:id="@+id/textView"
-                android:enabled="true"
-                android:textSize="30dp" />
-
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Move"
-                android:id="@+id/button2"
-                android:onClick="moveToPage"
-                android:layout_row="0"
-                android:layout_column="1"
-                android:layout_gravity="right" />
-
-        </LinearLayout>
-
-        <ListView
-            android:layout_width="wrap_content"
-            android:layout_height="430dp"
-            android:id="@+id/listViewComics"
-            android:layout_row="28"
-            android:layout_column="0"
-            android:layout_gravity="top"
-            android:layout_columnWeight="2"
-            android:layout_columnSpan="2" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:text="Refresh"
-            android:onClick="setRefresh"
-            android:id="@+id/button6"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_row="29"
-            android:layout_column="0" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:text="Set dir home"
-            android:id="@+id/dirHome"
-            android:onClick="setDirHome"
-            android:layout_gravity="right"
-            android:layout_row="29"
-            android:layout_column="1" />
+        android:layout_height="0dp"
+        android:layout_weight="0.02">
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -115,5 +28,110 @@
 
         </FrameLayout>
     </GridLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top">
+
+            <FrameLayout
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_row="0"
+                android:layout_column="0"
+                android:layout_gravity="top|left"
+                android:background="#64bfbfbf">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:onClick="onClickToView"
+                    android:id="@+id/button5"
+                    android:background="@drawable/toviewblack" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="288dp"
+                android:layout_height="match_parent"
+                android:layout_row="0"
+                android:layout_column="1"
+                android:weightSum="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_gravity="center|right">
+
+                <EditText
+                    android:layout_width="49dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/editText"
+                    android:layout_row="29"
+                    android:layout_column="0"
+                    android:layout_gravity="left"
+                    android:onClick="setOldCurrent"
+                    android:enabled="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true" >
+                </EditText>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text=" / 0"
+                    android:id="@+id/textView"
+                    android:enabled="true"
+                    android:textSize="30dp" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Move"
+                    android:id="@+id/button2"
+                    android:onClick="moveToPage"
+                    android:layout_row="0"
+                    android:layout_column="1"
+                    android:layout_weight="0.25" />
+
+            </LinearLayout>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical">
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="373dp"
+                android:id="@+id/listViewComics"
+                android:focusableInTouchMode="true"
+                android:focusable="true" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:text="Set dir home"
+                android:id="@+id/dirHome"
+                android:onClick="setDirHome"
+                android:layout_gravity="left|right"
+                android:layout_row="30"
+                android:layout_column="0"
+                android:textSize="20dp" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

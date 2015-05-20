@@ -39,11 +39,22 @@ public class SettingsActivity extends Activity {
     private String[] jpgList;              // Массив изображений
     private EditText editText;
     private int oldCurrentPage = 0;
+    private boolean checkActiv = false;
 
     @Override
     protected void onResume() {
         super.onResume();
+        Intent intent = getIntent();
+        if (intent.getStringExtra("path") != null) {
+            String fpath = intent.getStringExtra("path");
+            currentPage = intent.getIntExtra("cur", 0);
+            editText.setText(String.valueOf(currentPage + 1));
+            selectComics(fpath);
+            textView.setText(" / " + jpgList.length);
+            checkActiv = true;
+        }
         refreshList();
+        listView.requestFocus();
     }
 
     @Override
@@ -61,15 +72,20 @@ public class SettingsActivity extends Activity {
         textView = (TextView)findViewById(R.id.textView);
         editText = (EditText)findViewById(R.id.editText);
 
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View itemClicked, int position,
                                     long id) {
+                checkActiv = true;
                 currentComics = position;
                 selectComics(listFileComics.get(position).getPath());
-                textView.setText(" / " + jpgList.length);
-                editText.setText(String.valueOf(currentPage+1));
+                if (jpgList.length != 0) {
+                    textView.setText(" / " + jpgList.length);
+                    editText.setText(String.valueOf(currentPage + 1));
+                } else {
+                    textView.setText(" / 0");
+                    editText.setText(null);
+                }
             }
         });
 
@@ -108,7 +124,8 @@ public class SettingsActivity extends Activity {
     public void onClickToView(View view) {
         try {
             Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-            if (!listFileComics.isEmpty()) {
+            if (!listFileComics.isEmpty()&&checkActiv) {
+                moveToPage(this.listView);
                 intent.putExtra("path", listFileComics.get(currentComics).getPath());
                 intent.putExtra("cur", currentPage);
             }
@@ -169,7 +186,14 @@ public class SettingsActivity extends Activity {
         File currentDir = new File(path);
         PageTypeFilter filter = new PageTypeFilter();
         jpgList = currentDir.list(filter);
-        if (jpgList.length == 0) { return; }
+        if (jpgList.length == 0) { Toast toast = Toast.makeText(this,
+                "No images in the folder", Toast.LENGTH_SHORT);
+            toast.show();return; }
+        else {
+            Toast toast = Toast.makeText(this,
+                    "Image selected", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     public void moveToPage(View view) {
@@ -178,9 +202,15 @@ public class SettingsActivity extends Activity {
             if (t > 0 && t <= jpgList.length) {
                 currentPage = t - 1;
                 editText.setText(String.valueOf(currentPage + 1));
+                Toast toast = Toast.makeText(this,
+                        "Success", Toast.LENGTH_SHORT);
+                toast.show();
             } else {
                 currentPage = oldCurrentPage;
                 editText.setText(String.valueOf(currentPage + 1));
+                Toast toast = Toast.makeText(this,
+                        "Incorrectly", Toast.LENGTH_SHORT);
+                toast.show();
             }
         } catch (Exception e) {
 

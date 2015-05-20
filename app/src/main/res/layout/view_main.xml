@@ -1,14 +1,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivityFragme">
+    tools:context=".MainActivityFragme"
+    android:padding="0dp"
+    android:paddingEnd="0dp"
+    android:paddingStart="0dp">
 
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/generalPane"
-        android:layout_alignParentBottom="true"></FrameLayout>
+        android:layout_alignTop="@+id/pane"
+        android:layout_below="@+id/pane"
+        android:layout_alignLeft="@+id/pane"
+        android:layout_toRightOf="@+id/pane"
+        android:layout_alignBottom="@+id/pane"
+        android:layout_above="@+id/pane"
+        android:layout_alignRight="@+id/pane"
+        android:layout_toLeftOf="@+id/pane"
+        android:layout_alignBaseline="@+id/pane"
+        android:layout_margin="0dp"
+        android:background="@android:color/background_dark"></FrameLayout>
 
     <GridLayout
         android:layout_width="match_parent"
@@ -25,6 +38,7 @@
             android:background="#64bfbfbf"
             android:layout_row="0"
             android:layout_column="0">
+
 
             <Button
                 android:layout_width="90dp"
